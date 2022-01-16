@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Perkwall | View</title>
+        <link href="{% static '/styles/bundle.css' %}" rel="stylesheet">
+        <script src="{% static '/js/bundle.js' %}"></script>
+    </head>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'dashboard-main' %}">Perkwall</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard-main' %}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard-account' %}">Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account-logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container formContainer">
+        <div class="mb-3">
+            <h4>{{ name }}</h4>
+            <p class="fw-light fs-6">{{ title }}</p>
+            <div class="quillView" id="viewContainer"></div>
+            {{ view_form.body }}
+        </div>
+        {% if look_file_link %}
+            <div class="mb-3 d-flex justify-content-start align-items-center">
+                <a href="{{ look_file_link_url }}" class="link-primary me-2">{{ look_file_link_name }}</a>
+            </div>
+        {% endif %}
+    </div>
+<body>

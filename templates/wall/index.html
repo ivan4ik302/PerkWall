@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Perkwall | Wall</title>
+        <link href="{% static '/styles/bundle.css' %}" rel="stylesheet">
+        <script src="{% static '/js/bundle.js' %}"></script>
+    </head>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'dashboard-main' %}">Perkwall</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard-main' %}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard-account' %}">Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account-logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container contentContainer">
+        <div class="userInfoFlexDiv mb-3">
+            <div class="border d-flex justify-content-center align-items-center me-2 mb-2 userInfoFlexDivLogo">
+                <p class="fs-3">{{ user.username.0 }}</p>
+            </div>
+            <div class="userInfoFlexDivBioDiv">
+                <label for="bioInput" class="form-label">Bio</label>
+                {{ bio_form.bio }}
+            </div>
+        </div>
+        <div class="border border-1 rounded-3 mb-3 p-4">
+            <h4>{{ user.username }} products</h4>
+            <div class="mb-2">
+                <div class = "gridThree">
+                    {% for product in products %}
+                        <div class="mb-2">
+                            <div class="card">
+                                <div class="card-header">{{ product.name }} - {{ product.price }}</div>
+                                <div class="card-body">
+                                    <p>{{ product.title }}</p>
+                                    {% if product.is_bought %}
+                                        <a href="{{ product.view_url }}" class="link-primary me-2">View</a>
+                                    {% else %}
+                                        <a href="{{ product.buy_url }}" class="link-primary me-2">Buy</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if products.elements_number > 0 %}
+                    <div class="d-flex flex-row">
+                        <p class="me-2">Last {{ products|length }} of {{ products.elements_number }}</p>
+                        {% if products.elements_number > 3 %}
+                            <a href="{% url 'wall-view-page' kind='product'%}?user_name={{ user.username }}&page_number=1" class="link-primary">View</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="border border-1 rounded-3 mb-3 p-4">
+            <h4>{{ user.username }} subscription products</h4>
+            <div class="mb-2 gridThree">
+                {% for subscription_product in subscription_products %}
+                    <div class="mb-2">
+                        <div class="card">
+                            <div class="card-header">{{ subscription_product.name }}</div>
+                            <div class="card-body">
+                                <p>{{ subscription_product.title }}</p>
+                                <p><mark>{{ subscription_product.subscription_name }}</mark></p>
+                                {% if subscription_product.is_bought %}
+                                    <a href="{{ subscription_product.view_url }}" class="link-primary me-2">View</a>
+                                {% else %}
+                                    <p class="fw-lighter">You should buy subscription</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if subscription_products.elements_number > 0 %}
+                <div class="d-flex flex-row">
+                    <p class="me-2">Last {{ subscription_products|length }} of {{ subscription_products.elements_number }}</p>
+                    {% if subscription_products.elements_number > 3 %}
+                        <a href="{% url 'wall-view-page' kind='subscription-product'%}?user_name={{ user.username }}&page_number=1" class="link-primary">View</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="border border-1 rounded-3 mb-3 p-4">
+            <h4>{{ user.username }} subscriptions</h4>
+            <div class="mb-2 gridThree">
+                {% for subscription in subscriptions %}
+                    <div class="mb-2">
+                        <div class="card">
+                            <div class="card-header">{{ subscription.name }} - {{ subscription.price }}</div>
+                            <div class="card-body">
+                                <p>{{ subscription.description }}</p>
+                                {% if subscription.is_bought %}
+                                    <p class="fw-lighter">Paid until {{ subscription.expires }}</p>
+                                {% else %}
+                                    <a href="{{ subscription.buy_url }}" class="link-primary me-2">Buy</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+<body>

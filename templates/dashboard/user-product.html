@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Perkwall | User prodact</title>
+        <link href="{% static '/styles/bundle.css' %}" rel="stylesheet">
+        <script src="{% static '/js/bundle.js' %}"></script>
+    </head>
+    <div class="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true" data-axios-loader-for-file-form-custom-id="productFileCustomForm">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Process</h5>
+            </div>
+            <div class="modal-body" data-info-div-for-file-form-custom-id="productFileCustomForm">
+            </div>
+            <div class="modal-footer" data-button-div-for-file-form-custom-id="productFileCustomForm">
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteUserProdactModal" tabindex="-1" aria-labelledby="deleteUserProdactModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">  
+                Are you sure you want to delete the prodact?
+            </div>
+            <div class="modal-footer">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="deleteUserProductForm">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+          </div>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'dashboard-main' %}">Perkwall</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard-main' %}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard-account' %}">Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account-logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container formContainer">
+        {% if delete_user_product_form.non_field_errors %}
+                <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                    Something went wrong with deleting, try again!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+        {% endif %}
+        <form action="" method="post" enctype="multipart/form-data" class="fileFormCustom mb-3" id="productFileCustomForm">
+            {% csrf_token %}
+            <div data-form-error-for-file-form-custom-id="productFileCustomForm" data-for-field-name="__all__"></div>
+            <div class="mb-3">
+                <label for="priceInput" class="form-label">Price</label>
+                <div class="input-group" id="priceInput" aria-describedby="priceError">
+                    {{ user_product_form.price }}
+                    <span class="input-group-text">$</span>
+                </div>
+                <p class="text-danger" data-form-error-for-file-form-custom-id="productFileCustomForm" data-for-field-name="price"></p>
+            </div>
+            <div class="mb-3">
+                <label for="nameInput" class="form-label">Name</label>
+                {{ user_product_form.name }}
+                <p class="text-danger" data-form-error-for-file-form-custom-id="productFileCustomForm" data-for-field-name="name"></p>
+            </div>
+            <div class="mb-3">
+                <label for="titleInput" class="form-label">Title</label>
+                {{  user_product_form.title }}
+                <p class="text-danger" data-form-error-for-file-form-custom-id="productFileCustomForm" data-for-field-name="title"></p>
+            </div>
+            <div class="mb-3">
+                <label for="bodyInput" class="form-label">Body</label>
+                <div class="quill" id="editorContainer"></div>
+                {{  user_product_form.body }}
+                <p class="text-danger" data-form-error-for-file-form-custom-id="productFileCustomForm" data-for-field-name="body"></p>
+            </div>
+            <div class="mb-3">
+                {{  user_product_form.file }}
+                {{  user_product_form.is_file_change }}
+                <p class="text-danger" data-form-error-for-file-form-custom-id="productFileCustomForm" data-for-field-name="file"></p>
+            </div>
+            {% if user_product_look_file_link %}
+                <div class="mb-3 d-flex justify-content-start align-items-center" data-file-name-area-for-file-custom-id="fileProductInput">
+                    <a href="{{ user_product_look_file_link_url }}" class="link-primary me-2">{{ user_product_look_file_link_name }}</a>
+                    <button type="button" class="btn btn-link p-0" data-delete-button-file-custom-id="fileProductInput">Delete</button>
+                </div>
+            {% endif %}
+            <div class="d-flex justify-content-start align-items-center">
+                <button type="submit" class="btn btn-primary me-2">Save</button>
+                {% if user_product_delete_button %}
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteUserProdactModal">Delete</button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+<body>

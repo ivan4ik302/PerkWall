@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Perkwall | Account</title>
+        <link href="{% static '/styles/bundle.css' %}" rel="stylesheet">
+        <script src="{% static '/js/bundle.js' %}"></script>
+    </head>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'dashboard-main' %}">Perkwall</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard-main' %}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'dashboard-account' %}">Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account-logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container contentContainer">
+        <div class="border border-1 rounded-3 mb-3 p-4">
+            {% if new_user_subscription_form.non_field_errors %}
+                <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                    {% for error in new_user_subscription_form.non_field_errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+            <h4>Your own subscriptions</h4>
+            <p class="fw-light fs-6">You can add subscriptions and make articles for specific monthly subscriptions</p>
+            <div class="mb-2 gridThree">
+                {% for user_subscription in user_subscriptions %}
+                    <div class="mb-2">
+                        <div class="card">
+                            <div class="card-header">{{ user_subscription.subscription_name }}</div>
+                            <div class="card-body">
+                                <p>{{ user_subscription.description }}</p>
+                                <a href="{{ user_subscription.change_url }}" class="link-primary">Change</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="newUserSubscriptionForm">
+                <button type="submit" class="btn btn-primary">Add new</button>
+            </form>
+        </div>
+        <div class="border border-1 rounded-3 mb-3 p-4">
+            <h4>Your paid products</h4>
+            <div class="mb-2">
+                <div class = "gridThree">
+                    {% for product in products %}
+                        <div class="mb-2">
+                            <div class="card">
+                                <div class="card-header">{{ product.name }} - {{ product.price }}</div>
+                                <div class="card-body">
+                                    <p>{{ product.title }}</p>
+                                    <p>Author - <a href="{% url 'wall-main' %}?user_name={{ product.user }}">{{ product.user }}</a></p>
+                                    <a href="{{ product.view_url }}" class="link-primary me-2">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if products.elements_number > 0 %}
+                    <div class="d-flex flex-row">
+                        <p class="me-2">Last {{ products|length }} of {{ products.elements_number }}</p>
+                        {% if products.elements_number > 3 %}
+                            <a href="{% url 'dashboard-view-page' kind='product' %}?page_number=1" class="link-primary">View</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="border border-1 rounded-3 mb-3 p-4">
+            <h4>Your paid subscriptions</h4>
+            <div class="mb-2">
+                <div class = "gridThree">
+                    {% for subscription in subscriptions %}
+                        <div class="mb-2">
+                            <div class="card">
+                                <div class="card-header">{{ subscription.name }} - {{ subscription.price }}</div>
+                                <div class="card-body">
+                                    <p>{{ subscription.description }}</p>
+                                    <p>Author - <a href="{% url 'wall-main' %}?user_name={{ subscription.user }}">{{ subscription.user }}</a></p>
+                                    <p class="fw-lighter">Paid until {{ subscription.expires }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if subscriptions.elements_number > 0 %}
+                    <div class="d-flex flex-row">
+                        <p class="me-2">Last {{ subscriptions|length }} of {{ subscriptions.elements_number }}</p>
+                        {% if subscriptions.elements_number > 3 %}
+                            <a href="{% url 'dashboard-view-page' kind='subscription' %}?page_number=1" class="link-primary">View</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+<body>

@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Perkwall | Dashboard</title>
+        <link href="{% static '/styles/bundle.css' %}" rel="stylesheet">
+        <script src="{% static '/js/bundle.js' %}"></script>
+    </head>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'dashboard-main' %}">Perkwall</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'dashboard-main' %}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard-account' %}">Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account-logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container contentContainer">
+        <div class="mb-3">
+            {% if user_bio_form.non_field_errors %}
+                <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                    Something went wrong with your Bio, try again! 
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+            <div class="userInfoFlexDiv">
+                <div class="border d-flex justify-content-center align-items-center me-2 mb-2 userInfoFlexDivLogo">
+                    <p class="fs-3">{{ request.user.username.0 }}</p>
+                </div>
+                <div class="userInfoFlexDivBioDiv">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="form_type" value="userBioForm">
+                        <label for="bioInput" class="form-label">Bio</label>
+                        {{ user_bio_form.bio }}
+                        {% if user_bio_form.bio.errors %}
+                            <div class="form-text text-danger">
+                                {% for error in user_bio_form.bio.errors %}
+                                    <p>* {{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="row align-items-center">
+                            <p class="fw-light fs-6 col-auto m-0">Max length 210 characters</p>
+                            <button type="submit" class="btn btn-link col-auto p-0">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="border border-1 rounded-3 mb-3 p-4">
+            <h4>Your products</h4>
+            <p class="fw-light fs-6">You can add one pay products</p>
+            <div class="mb-2">
+                <div class = "gridThree">
+                    {% for user_product in user_products %}
+                        <div class="mb-2">
+                            <div class="card">
+                                <div class="card-header">{{ user_product.name }} - {{ user_product.price }}</div>
+                                <div class="card-body">
+                                    <p>{{ user_product.title }}</p>
+                                    <div class="d-flex flex-row">
+                                        <a href="{{ user_product.preview_url }}" class="link-primary me-2">View</a>
+                                        <a href="{{ user_product.change_url }}" class="link-primary">Change</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if user_products.elements_number > 0 %}
+                    <div class="d-flex flex-row">
+                        <p class="me-2">Last {{ user_products|length }} of {{ user_products.elements_number }}</p>
+                        {% if user_products.elements_number > 3 %}
+                            <a href="{% url 'dashboard-user-view-page' kind='product'%}?page_number=1" class="link-primary">View</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            <a class="btn btn-primary" href="{% url 'dashboard-user-product' %}?action=add" role="button">Add new</a>
+        </div>
+        <div class="border border-1 rounded-3 mb-3 p-4">
+            <h4>Your subscription products</h4>
+            <p class="fw-light fs-6">You can add products for which the user will pay by subscription</p>
+            <div class="mb-2 gridThree">
+                {% for user_subscription_product in user_subscription_products %}
+                        <div class="mb-2">
+                            <div class="card">
+                                <div class="card-header">{{ user_subscription_product.name }}</div>
+                                <div class="card-body">
+                                    <p>{{ user_subscription_product.title }}</p>
+                                    <p><mark>{{ user_subscription_product.subscription_name }}</mark></p>
+                                    <div class="d-flex flex-row">
+                                        <a href="{{ user_subscription_product.preview_url }}" class="link-primary me-2">View</a>
+                                        <a href="{{ user_subscription_product.change_url }}" class="link-primary">Change</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if user_subscription_products.elements_number > 0 %}
+                    <div class="d-flex flex-row">
+                        <p class="me-2">Last {{ user_subscription_products|length }} of {{ user_subscription_products.elements_number }}</p>
+                        {% if user_subscription_products.elements_number > 3 %}
+                            <a href="{% url 'dashboard-user-view-page' kind='subscription-product'%}?page_number=1" class="link-primary">View</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+                <a class="btn btn-primary" href="{% url 'dashboard-user-subscription-product' %}?action=add" role="button">Add new</a>
+            </div>
+        </div>
+    </div>
+<body>

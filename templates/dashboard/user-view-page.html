@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Perkwall | View page</title>
+        <link href="{% static '/styles/bundle.css' %}" rel="stylesheet">
+        <script src="{% static '/js/bundle.js' %}"></script>
+    </head>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'dashboard-main' %}">Perkwall</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard-main' %}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard-account' %}">Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account-logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container contentContainer">
+        <div class="mb-2 gridThree">
+            {% for item in page_object %}
+                <div class="mb-2">
+                    <div class="card">
+                        <div class="card-header">
+                            {{ item.name }}
+                            {% if item.is_product %}
+                                 - {{ item.price }}
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <p>{{ item.title }}</p>
+                            {% if item.is_subscription_product %}
+                                <p><mark>{{ item.subscription_name }}</mark></p>
+                            {% endif %}
+                            <div class="d-flex flex-row">
+                                <a href="{{ item.preview_url }}" class="link-primary me-2">View</a>
+                                <a href="{{ item.change_url }}" class="link-primary">Change</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="d-flex flex-row mb-3">
+            {% if page_object.has_previous %}
+                <a href="?page_number={{ page_object.previous_page_number }}" class="me-2">Previous</a>
+            {% endif %}
+            <p class="me-2">{{ page_object.number }} of {{ page_object.paginator.num_pages }}</p>
+            {% if page_object.has_next %}
+                <a href="?page_number={{ page_object.next_page_number }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+<body>
