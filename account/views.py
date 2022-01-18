@@ -1,7 +1,6 @@
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_GET
 from django.views.decorators.http import require_http_methods
-from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse

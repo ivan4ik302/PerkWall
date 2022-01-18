@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.urls.base import reverse
 from django.http import JsonResponse
-from django.views.decorators.http import require_http_methods, require_GET
+from django.views.decorators.http import require_http_methods, require_GET,  require_POST
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from account.models import UserSubscription, UserProduct, UserSubscriptionProduct, UserBillProduct, UserBillSubscription
@@ -10,8 +10,11 @@ from django.http import Http404
 from django.core.paginator import Paginator
 from perkwall.settings import SelfIteamListView
 from perkwall.settings import ForeignIteamListView
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
 from . import forms
 import json
+from django.db.models import Q
 
 @require_http_methods(['GET', 'POST'])
 @login_required
@@ -422,3 +425,45 @@ def dashboard_view_page(request, kind):
         return render(request, 'dashboard/view-page.html', context={'page_object': page_object})
 
     raise Http404()
+
+@require_GET
+@login_required
+def dashboard_users_list(request):
+    users_list_form = forms.UsersListForm()
+    users_list_form.initial['page_number'] = '1'
+    return render(request, 'dashboard/users-list.html', context={'users_list_form': users_list_form})
+
+@require_POST
+@login_required
+@csrf_exempt
+def dashboard_users_list_get(request):
+    request_body = json.loads(request.body)
+    if request_body["user_name"] != '':
+        fit_users = User.objects.all().filter(username__regex=rf'\b{request_body["user_name"]}').filter(~Q(username=request.user.username))
+
+    else:
+        fit_users = []
+
+    page_object = Paginator(fit_users, 9).get_page(request_body['page_number'])
+    response_body = {'users': []}
+    for user in page_object:
+        response_body['users'].append({'user_name': user.username, 'users_url': f'{reverse("wall-main")}?user_name={user.username}'})
+
+    response_body['has_previous'] = page_object.has_previous()
+    if page_object.has_previous():
+        response_body['previous_page_number'] = page_object.previous_page_number()
+
+    else:
+        response_body['previous_page_number'] = None
+
+    response_body['has_next'] = page_object.has_next()
+    if page_object.has_next():
+        response_body['next_page_number'] = page_object.next_page_number()
+
+    else:
+        response_body['next_page_number'] = None
+
+    response_body['page_current_number'] = page_object.number
+    response_body['page_number'] = page_object.paginator.num_pages
+
+    return JsonResponse(response_body)

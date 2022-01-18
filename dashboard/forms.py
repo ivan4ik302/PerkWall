@@ -36,6 +36,18 @@ class UserSubscriptionForm(forms.Form):
 class DeleteUserSubscriptionForm(forms.Form):
     pass
 
+class UsersListForm(forms.Form):
+    user_name = forms.CharField(widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control userFinderCustomInput', 'id': 'userNameInput'}))
+    page_number = forms.CharField(widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control invisibleInput',
+                                                                'id': 'userNaneInput', 'readonly': True,
+                                                                'data-page-number-for-user-finder-custom-input-id': 'userNameInput'}))
+    previous_page_number = forms.CharField(widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control invisibleInput',
+                                                                'id': 'userNaneInput', 'readonly': True,
+                                                                'data-previous-page-number-for-user-finder-custom-input-id': 'userNameInput'}))
+    next_page_number = forms.CharField(widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control invisibleInput',
+                                                                'id': 'userNaneInput', 'readonly': True,
+                                                                'data-next-page-number-for-user-finder-custom-input-id': 'userNameInput'}))
+
 class UserProductForm(forms.Form):
     price = forms.CharField(required=True, widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control'}))
 

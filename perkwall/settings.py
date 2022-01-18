@@ -16,7 +16,7 @@ import os
 
 from django.urls.base import reverse
 from datetime import datetime
-
+from django.core.signing import Signer
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -235,7 +235,8 @@ class ForeignProductView:
         if is_bought:
             self.view_url = reverse('wall-view', kwargs={'kind': 'product'}) + f'?product_id={product.id}'
         else:
-            self.buy_url='jhjkhkj'
+            signer = Signer()
+            self.buy_url= f'{reverse("payment-main")}?token={signer.sign_object({"type": "product", "id": product.id})}'
 
 class ForeignSubscriptionProductView:
     
@@ -252,6 +253,10 @@ class ForeignSubscriptionProductView:
         if is_bought:
             self.view_url = reverse('wall-view', kwargs={'kind': 'subscription-product'}) + f'?subscription_product_id={subscription_product.id}'
 
+        else:
+            signer = Signer()
+            self.buy_sub_url = f'{reverse("payment-main")}?token={signer.sign_object({"type": "subscription", "id": subscription_product.subscription.id})}'
+
 class ForeignSubscriptionView:
     
     def __init__(self,subscription, is_bought, expires):
@@ -265,7 +270,8 @@ class ForeignSubscriptionView:
             self.expires = expires
 
         else:
-            self.buy_url='jhjkhkj'
+            signer = Signer()
+            self.buy_url= f'{reverse("payment-main")}?token={signer.sign_object({"type": "subscription", "id": subscription.id})}'
 
 
 class ForeignIteamListView:

@@ -4,7 +4,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Perkwall | Preview</title>
+        <title>Perkwall | Users</title>
         <link href="{% static '/styles/bundle.css' %}" rel="stylesheet">
         <script src="{% static '/js/bundle.js' %}"></script>
     </head>
@@ -65,17 +65,21 @@
             </div>
         </div>
     </nav>
-    <div class="container contentContainer">
+    <div class="container formContainer">
         <div class="mb-3">
-            <h4>{{ name }}</h4>
-            <p class="fw-light fs-6">{{ title }}</p>
-            <div class="quillView" id="viewContainer"></div>
-            {{ user_preview_form.body }}
+            <label for="userNaneInput" class="form-label">User name:</label>
+            {{ users_list_form.user_name }}
+            {{ users_list_form.page_number }}
+            {{ users_list_form.previous_page_number }}
+            {{ users_list_form.next_page_number }}
         </div>
-        {% if look_file_link %}
-            <div class="mb-3 d-flex justify-content-start align-items-center">
-                <a href="{{ look_file_link_url }}" class="link-primary me-2">{{ look_file_link_name }}</a>
-            </div>
-        {% endif %}
+        <div class="mb-3 fw-lighter" data-user-list-for-user-finder-custom-input-id="userNameInput">
+            Nothing yet
+        </div>
+        <div class="d-flex flex-row mb-3">
+            <button type="button" class="btn btn-link me-2 d-none p-0" data-previous-link-for-user-finder-custom-input-id="userNameInput">Previous</button>
+            <p class="me-2 d-none mb-0" data-page-counter-for-user-finder-custom-input-id="userNameInput"></p>
+            <button type="button" class="btn btn-link d-none  p-0" data-next-link-for-user-finder-custom-input-id="userNameInput">Next</button>
+        </div>
     </div>
 <body>
